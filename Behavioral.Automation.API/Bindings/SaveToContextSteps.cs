@@ -1,4 +1,7 @@
+using Behavioral.Automation.API.Configs;
 using Behavioral.Automation.API.Context;
+using Behavioral.Automation.API.Services;
+using Behavioral.Automation.Configs;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
@@ -13,12 +16,14 @@ public class SaveToContextSteps
     private readonly ApiContext _apiContext;
     private readonly ScenarioContext _scenarioContext;
     private readonly ISpecFlowOutputHelper _specFlowOutputHelper;
-    
-    public SaveToContextSteps(ApiContext apiContext, ScenarioContext scenarioContext, ISpecFlowOutputHelper specFlowOutputHelper)
+    private readonly HttpService _httpService;
+
+    public SaveToContextSteps(ApiContext apiContext, ScenarioContext scenarioContext, ISpecFlowOutputHelper specFlowOutputHelper, HttpService httpService)
     {
         _apiContext = apiContext;
         _scenarioContext = scenarioContext;
         _specFlowOutputHelper = specFlowOutputHelper;
+        _httpService = httpService;
     }
 
     [Given("save response json path \"(.*)\" as \"(.*)\"")]
@@ -28,6 +33,17 @@ public class SaveToContextSteps
         var stringToSave = GetStringByJsonPath(jsonPath);
         _scenarioContext.Add(variableName, stringToSave);
         _specFlowOutputHelper.WriteLine($"Saved '{stringToSave}' with key '{variableName}' in scenario context");
+    }
+
+    [When("user sends a \"(.*)\" request to \"(.*)\" url with \"(.*)\" in path")]
+    public HttpResponseMessage UserSendsHttpRequest(string httpMethod, string url, string path)
+    {
+        var method = new HttpMethod(httpMethod.ToUpper());
+
+        _apiContext.Request = new HttpRequestMessage(method, GetUri(url, _scenarioContext.Get<string>(path)));
+        _httpService.SendContextRequest();
+
+        return _apiContext.Response;
     }
 
     private string GetStringByJsonPath(string jsonPath)
@@ -67,5 +83,15 @@ public class SaveToContextSteps
             Assert.Fail($"No value by json path: {jsonPath}");
         }
         return actualJTokens;
+    }
+
+    private static Uri GetUri(string url, string path)
+    {
+        if (!Uri.IsWellFormedUriString(url, UriKind.Absolute))
+        {
+            url = ConfigManager.GetConfig<Config>().ApiHost + url + path;
+        }
+
+        return new UriBuilder(url).Uri;
     }
 }
