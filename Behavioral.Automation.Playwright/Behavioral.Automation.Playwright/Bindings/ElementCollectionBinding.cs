@@ -48,4 +48,15 @@ public class ElementCollectionBinding
     {
         await element.Locator.Nth(index).ClickAsync();
     }
+
+    [Given(@"user has ""(.*)"" items in ""(.*)""")]
+    [When(@"user has ""(.*)"" items in ""(.*)""")]
+    public async Task CountElements(int amount, WebElementWrapper element)
+    {
+        var count = await element.Locator.CountAsync();
+        if(amount != count)
+        {
+            Assert.AreEqual(amount, count);
+        }
+    }
 }
