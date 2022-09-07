@@ -32,6 +32,12 @@ public class ElementTransformations
         var dropdownSelector = _locatorStorageService.Get<DropdownSelector>(caption);
         return new DropdownWrapper(_webContext, dropdownSelector, caption);
     }
+    [StepArgumentTransformation]
+    public ItemWrapper GetItemElement(string caption)
+    {
+        var itemSelector = _locatorStorageService.Get<ItemSelector>(caption);
+        return new ItemWrapper(_webContext, itemSelector, caption);
+    }
 
     [StepArgumentTransformation]
     public TableWrapper GetTableElement(string caption)

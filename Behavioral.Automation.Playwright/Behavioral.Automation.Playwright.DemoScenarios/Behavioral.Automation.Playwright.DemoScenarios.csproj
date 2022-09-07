@@ -8,7 +8,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Behavioral.Automation.Playwright\Behavioral.Automation.Playwright.csproj"/>
+      <SpecFlowObsoleteCodeBehindFiles Remove="Features\Saucedemo - Copy.feature.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Behavioral.Automation.Playwright\Behavioral.Automation.Playwright.csproj" />
     </ItemGroup>
 
     <ItemGroup>
@@ -17,6 +21,12 @@
         <PackageReference Include="SpecFlow.Tools.MsBuild.Generation" Version="3.9.69" />
         <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.1.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="Features\AddRemoveItems.feature.cs">
+        <DependentUpon>AddRemoveItems.feature</DependentUpon>
+      </Compile>
     </ItemGroup>
             
 
@@ -27,6 +37,14 @@
         <None Update="AutomationConfig.json">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
+    </ItemGroup>
+            
+
+    <ItemGroup>
+      <SpecFlowFeatureFiles Update="Features\AddRemoveItems.feature">
+        <Visible>$(UsingMicrosoftNETSdk)</Visible>
+        <CodeBehindFile>%(RelativeDir)%(Filename).feature$(DefaultLanguageSourceExtension)</CodeBehindFile>
+      </SpecFlowFeatureFiles>
     </ItemGroup>
 
 </Project>

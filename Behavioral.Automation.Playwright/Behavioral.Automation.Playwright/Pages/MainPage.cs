@@ -16,6 +16,7 @@ class MainPage : ISelectorStorage
     //Common elements
     public ElementSelector PageTitle = new() { Selector = "//span[@class='title']" };
     public ElementSelector InventoryList = new() { Selector = "//div[@class='inventory_list']/*" };
+    public ItemSelector Items = new() { Selector = "//div[@class='inventory_list']/*" };
 
     //Add items to the cart
     public ElementSelector AddBackpackToCart = new() { IdSelector = "add-to-cart-sauce-labs-backpack" };
